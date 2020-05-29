@@ -163,6 +163,20 @@ def struc_ten_eig(struc_ten, max_eig, min_eig, proxy_reverse_eig):
         if eig[0][i] < epsilon:
             eig[0][i]= epsilon
     if proxy_reverse_eig == True:
+	a1 = np.array([1,0,0])*eig[0][0]
+	a2 = np.array([0,1,0])*eig[0][1]
+	a3 = np.array([0,0,1])*eig[0][2]
+	a1d = np.cross(a2,a3)/(np.dot(a1,np.cross(a2,a3))) 
+	a2d = np.cross(a3,a1)/(np.dot(a2,np.cross(a3,a1))) 
+	a3d = np.cross(a1,a2)/(np.dot(a3,np.cross(a1,a2)))
+	cov_dual = np.array([a1d,a2d,a3d])
+	eigd, R_matd = np.linalg.eigh(cov_dual)
+	a1d = a1d * np.amax(eig)/np.amax(eigd)
+	a2d = a2d * np.amax(eig)/np.amax(eigd)
+	a3d = a3d * np.amax(eig)/np.amax(eigd)
+	
+	eig = (np.array([a1d,a2d,a2d]),eig[1])
+	"""
         sum_eig =1/(1+np.sum(eig[0])) #np.linalg.norm(eig[0])
         ten1 = (eig[0][0]/sum_eig)**(-1)*(eig[0][0]/sum_eig*eig[0][2])
         ten2 = (eig[0][1]/sum_eig)**(-1)*(eig[0][0]/sum_eig*eig[0][2])
@@ -174,7 +188,7 @@ def struc_ten_eig(struc_ten, max_eig, min_eig, proxy_reverse_eig):
         ten2 = eig[0][1]-c + b
         ten3 = eig[0][2]-a
         eig = (np.array([ten1,ten2,ten3]),eig[1])
-
+	"""
     return eig
 
 
